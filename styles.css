@@ -5,28 +5,51 @@ body {
     color: white;
 }
 
-header {
+/* NAVBAR */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: black;
-    padding: 15px;
+    background-color: #000;
+    padding: 15px 30px;
+    position: sticky;
+    top: 0;
 }
 
-nav a {
+.navbar h1 {
+    color: red;
+    margin: 0;
+}
+
+.navbar a {
     color: white;
-    margin-left: 15px;
+    margin-left: 20px;
     text-decoration: none;
+    transition: 0.3s;
 }
 
-.hero {
-    text-align: center;
-    margin-top: 100px;
-}
-
-h1 {
+.navbar a:hover {
     color: red;
 }
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background: linear-gradient(to right, #000, #1a1a1a);
+}
+
+.hero h2 {
+    font-size: 48px;
+    color: red;
+}
+
+.hero p {
+    font-size: 20px;
+    color: #ccc;
+}
+
+/* RUTINAS */
 .rutinas {
     text-align: center;
     margin-top: 80px;
@@ -44,44 +67,39 @@ h1 {
     flex-wrap: wrap;
 }
 
+/* CARD */
 .card {
     background-color: #1c1c1c;
     padding: 20px;
     width: 250px;
     border-radius: 10px;
-    transition: 0.3s;
-    box-shadow: 0 0 10px rgba(255,0,0,0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .card:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
 }
 
+/* BOTONES */
 .card button {
     background-color: red;
     border: none;
-    padding: 10px;
+    padding: 10px 15px;
     color: white;
     cursor: pointer;
     border-radius: 5px;
-}
-.hero {
-    text-align: center;
-    margin-top: 100px;
+    transition: 0.3s;
 }
 
-.hero h2 {
-    font-size: 40px;
-    color: red;
+.card button:hover {
+    background-color: darkred;
 }
 
-.hero p {
-    font-size: 18px;
-    color: #ccc;
-}
+/* DETALLE EJERCICIOS */
 #detalle {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 60px;
 }
 
 #detalle h2 {
@@ -89,39 +107,248 @@ h1 {
 }
 
 #contenido {
-    margin-top: 20px;
-    font-size: 18px;
-}
-#contenido {
     list-style: none;
     padding: 0;
     margin-top: 20px;
 }
 
 #contenido li {
-    background-color: #1c1c1c;
-    margin: 10px auto;
-    padding: 10px;
     width: 300px;
+    margin: 10px auto;
+    padding: 12px;
+    background-color: #1c1c1c;
     border-radius: 8px;
-    box-shadow: 0 0 5px rgba(255,0,0,0.3);
 }
-#contenido li {
-    background-color: #1c1c1c;
-    margin: 10px auto;
-    padding: 10px;
-    width: 300px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(255,0,0,0.3);
 
+/* FOOTER */
+footer {
+    text-align: center;
+    margin-top: 60px;
+    padding: 20px;
+    background-color: #000;
+    color: #ccc;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+/* cuando se active */
+.modal.active {
+    display: flex;
+}
+
+/* contenido del modal */
+.modal-content {
+    background-color: #1c1c1c;
+    padding: 25px;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 12px;
+    text-align: center;
+    transform: scale(0.8);
     opacity: 0;
-    transform: translateY(10px);
-    animation: fadeIn 0.4s forwards;
+    animation: modalIn 0.3s ease forwards;
 }
 
-@keyframes fadeIn {
+.modal-columns {
+    display: flex;
+    gap: 40px;
+    margin-top: 15px;
+    justify-content: space-between;
+}
+
+#modal-title {
+    color: red;
+    margin-bottom: 15px;
+}
+
+#modal-list li {
+    margin: 8px 0;
+    padding: 10px;
+    background-color: #111;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+#modal-list li:hover {
+    background-color: #222;
+}
+#modal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal.completed-glow .modal-content {
+    box-shadow: 0 0 20px red, 0 0 40px red;
+    transition: 0.5s;
+}
+
+
+/* animación entrada */
+@keyframes modalIn {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* animación salida */
+.modal.hide .modal-content {
+    animation: modalOut 0.2s ease forwards;
+}
+
+@keyframes modalOut {
+    to {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+}
+
+#close {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+    color: white;
+    transition: 0.3s;
+}
+
+#close:hover {
+    color: red;
+}
+
+.banner {
+    height: 300px;
+    background-image: url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.banner::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.banner-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+
+    /* estado inicial */
+    opacity: 0;
+    transform: translateY(30px);
+
+    /* animación */
+    animation: bannerFadeIn 1s ease forwards;
+}
+
+
+.banner h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.banner p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+/* animación */
+@keyframes bannerFadeIn {
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
+
+.btn {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: darkred;
+}
+
+.card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.6s ease;
+}
+
+.card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.column {
+    flex: 1;
+    min-width: 250px;
+}
+
+.column h3 {
+    color: red;
+    margin-bottom: 10px;
+}
+
+.column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.column li {
+    background-color: #111;
+    margin: 6px 0;
+    padding: 8px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.column li.completed {
+    background-color: #0f0f0f;
+    color: #aaa;
+    text-decoration: line-through;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0 20px 0;
+}
+
+#progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: red;
+    transition: width 0.3s ease;
+}
+

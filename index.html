@@ -1,21 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Gym Manager</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
 
-    <header>
-        <h1>💪 Gym Manager</h1>
+<body>
+    
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="close">&times;</span>
+        <h2 id="modal-title"></h2>
+        <p id="progress-text"></p>
+        
+        <div class="progress-bar">
+            <div id="progress-fill"></div>
+        </div>
+
+        <div class="modal-columns">
+            <div class="column">
+                <h3>Ejercicios</h3>
+                <ul id="modal-exercises"></ul>
+            </div>
+
+            <div class="column">
+                <h3>Variantes</h3>
+                <ul id="modal-extras"></ul>
+            </div>
+        </div>
+
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span id="closeLogin">&times;</span>
+
+        <h2>Iniciar Sesión</h2>
+
+        <input type="text" id="username" placeholder="Usuario">
+        <br><br>
+        <input type="password" id="password" placeholder="Contraseña">
+        <br><br>
+
+        <button id="loginSubmit">Ingresar</button>
+    </div>
+</div>
+
+    </div>
+</div>
+
+    <header class="navbar">
+        <h1>Gym Manager</h1>
         <nav>
             <a href="#">Inicio</a>
             <a href="#rutinas">Rutinas</a>
-            <a href="#">Login</a>
+            <a href="#detalle">Acceder</a>
         </nav>
     </header>
+
+<section class="banner">
+    <div class="banner-content">
+        <h2>Entrena mejor, alcanza tus metas</h2>
+        <p>Organiza tus rutinas y lleva el control de tu progreso</p>
+        <a href="#rutinas" class="btn">Explorar rutinas</a>
+    </div>
+</section>
 
     <main>
         <section class="hero">
@@ -49,12 +99,6 @@
             </div>
         </section>
         
-        <section id="detalle">
-            <h2>📋 Ejercicios</h2>
-            <ul id="contenido">
-                <li>Selecciona una rutina...</li>
-            </ul>
-        </section>
     </main>
 
     <footer>
