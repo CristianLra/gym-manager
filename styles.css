@@ -1,0 +1,127 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: white;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    padding: 15px;
+}
+
+nav a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.hero {
+    text-align: center;
+    margin-top: 100px;
+}
+
+h1 {
+    color: red;
+}
+.rutinas {
+    text-align: center;
+    margin-top: 80px;
+}
+
+.rutinas h2 {
+    color: red;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #1c1c1c;
+    padding: 20px;
+    width: 250px;
+    border-radius: 10px;
+    transition: 0.3s;
+    box-shadow: 0 0 10px rgba(255,0,0,0.3);
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card button {
+    background-color: red;
+    border: none;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.hero {
+    text-align: center;
+    margin-top: 100px;
+}
+
+.hero h2 {
+    font-size: 40px;
+    color: red;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #ccc;
+}
+#detalle {
+    text-align: center;
+    margin-top: 50px;
+}
+
+#detalle h2 {
+    color: red;
+}
+
+#contenido {
+    margin-top: 20px;
+    font-size: 18px;
+}
+#contenido {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#contenido li {
+    background-color: #1c1c1c;
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(255,0,0,0.3);
+}
+#contenido li {
+    background-color: #1c1c1c;
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(255,0,0,0.3);
+
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.4s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

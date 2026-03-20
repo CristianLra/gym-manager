@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Gym Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>💪 Gym Manager</h1>
+        <nav>
+            <a href="#">Inicio</a>
+            <a href="#rutinas">Rutinas</a>
+            <a href="#">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Transforma tu cuerpo</h2>
+            <p>Gestiona tus entrenamientos y alcanza tus metas</p>
+        </section>
+
+        <section class="rutinas" id="rutinas">
+            <h2>🔥 Rutinas</h2>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Pecho</h3>
+                    <p>Press banca, aperturas, fondos</p>
+                    <button data-rutina="pecho">Ver más</button>
+                </div>
+
+                <div class="card">
+                    <h3>Espalda</h3>
+                    <p>Dominadas, remo, jalones</p>
+                    <button data-rutina="espalda">Ver más</button>
+                </div>
+
+                <div class="card">
+                    <h3>Pierna</h3>
+                    <p>Sentadillas, prensa, extensiones</p>
+                    <button data-rutina="pierna">Ver más</button>
+                </div>
+
+            </div>
+        </section>
+        
+        <section id="detalle">
+            <h2>📋 Ejercicios</h2>
+            <ul id="contenido">
+                <li>Selecciona una rutina...</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2026 Gym Manager - Cristian</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
