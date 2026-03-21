@@ -235,13 +235,13 @@ loginSubmit.addEventListener("click", () => {
 
 function updateNavbar() {
     const isLogged = localStorage.getItem("loggedIn");
-    const username = localStorage.getItem("username");
+    const username = localStorage.getItem("currentUser");
 
-    if (isLogged === "true") {
+    if (isLogged === "true" && username) {
         loginBtn.style.display = "none";
         logoutBtn.style.display = "inline-block";
 
-        userDisplay.textContent = `Hola, ${username} `;
+        userDisplay.textContent = `Hola, ${username}`;
     } else {
         loginBtn.style.display = "inline-block";
         logoutBtn.style.display = "none";
