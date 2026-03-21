@@ -3,16 +3,32 @@ console.log("Gym Manager iniciado");
 /* ========================= */
 /* ELEMENTOS DEL DOM */
 /* ========================= */
+
+const openLogin = document.getElementById("openLogin");
+const authOverlay = document.getElementById("authOverlay");
+const openLoginFromOverlay = document.getElementById("openLoginFromOverlay");
+
+const userDisplay = document.getElementById("userDisplay");
+
+const openRegister = document.getElementById("openRegister");
+const registerModal = document.getElementById("registerModal");
+const closeRegister = document.getElementById("closeRegister");
+
 const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 const loginModal = document.getElementById("loginModal");
 const closeLogin = document.getElementById("closeLogin");
+const loginUser = document.getElementById("loginUser");
+const loginPass = document.getElementById("loginPass");
 const loginSubmit = document.getElementById("loginSubmit");
 
 const botones = document.querySelectorAll(".card button");
+
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modal-title");
 const modalExercises = document.getElementById("modal-exercises");
 const modalExtras = document.getElementById("modal-extras");
+
 const progressText = document.getElementById("progress-text");
 const closeBtn = document.getElementById("close");
 const progressFill = document.getElementById("progress-fill");
@@ -140,6 +156,15 @@ function cerrarModal() {
 
 botones.forEach(boton => {
     boton.addEventListener("click", () => {
+
+        const isLogged = localStorage.getItem("loggedIn");
+
+        if (isLogged !== "true") {
+            alert("Debes iniciar sesión primero 🔒");
+            loginModal.classList.add("active");
+            return;
+        }
+
         const rutina = boton.dataset.rutina;
         abrirModal(rutina);
     });
@@ -184,13 +209,136 @@ closeLogin.addEventListener("click", () => {
 });
 
 loginSubmit.addEventListener("click", () => {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
+    const username = loginUser.value.trim();
+    const password = loginPass.value.trim();
 
-    if (user === "admin" && pass === "1234") {
-        alert("Login exitoso ✅");
+    let users = getUsers();
+
+    const userFound = users.find(
+        u => u.username === username && u.password === password
+    );
+
+    if (userFound) {
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("currentUser", username);
+
+        authOverlay.style.display = "none";
         loginModal.classList.remove("active");
+
+        updateNavbar();
+
+        alert("Login exitoso");
     } else {
-        alert("Credenciales incorrectas ❌");
+        alert("Credenciales incorrectas");
     }
+});
+
+function updateNavbar() {
+    const isLogged = localStorage.getItem("loggedIn");
+    const username = localStorage.getItem("username");
+
+    if (isLogged === "true") {
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+
+        userDisplay.textContent = `Hola, ${username} `;
+    } else {
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+
+        userDisplay.textContent = "";
+    }
+}
+
+window.addEventListener("load", () => {
+    updateNavbar();
+    checkAuth();
+});
+
+logoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.removeItem("loggedIn");
+    updateNavbar();
+});
+
+openLoginFromOverlay.addEventListener("click", () => {
+    authOverlay.style.display = "none";
+    loginModal.classList.add("active");
+});
+
+function checkAuth() {
+    const isLogged = localStorage.getItem("loggedIn");
+
+    if (isLogged === "true") {
+        authOverlay.style.display = "none";
+    } else {
+        authOverlay.style.display = "flex";
+    }
+}
+
+function getUsers() {
+    return JSON.parse(localStorage.getItem("users")) || [];
+}
+
+function saveUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+}
+
+openRegister.addEventListener("click", (e) => {
+    e.preventDefault();
+    loginModal.classList.remove("active");
+    registerModal.classList.add("active");
+});
+
+openLogin.addEventListener("click", (e) => {
+    e.preventDefault();
+    registerModal.classList.remove("active");
+    loginModal.classList.add("active");
+});
+
+closeRegister.addEventListener("click", () => {
+    registerModal.classList.remove("active");
+});
+
+window.addEventListener("click", (e) => {
+    if (e.target === registerModal) {
+        registerModal.classList.remove("active");
+    }
+});
+
+document.getElementById("registerSubmit").addEventListener("click", () => {
+    const username = document.getElementById("registerUser").value.trim();
+    const password = document.getElementById("registerPass").value.trim();
+
+    // Validación básica
+    if (username === "" || password === "") {
+        alert("Completa todos los campos ❗");
+        return;
+    }
+
+    let users = getUsers();
+
+    // Verificar si el usuario ya existe
+    const exists = users.find(u => u.username === username);
+
+    if (exists) {
+        alert("El usuario ya existe ❌");
+        return;
+    }
+
+    // Guardar usuario nuevo
+    users.push({ username, password });
+    saveUsers(users);
+
+    alert("Registro exitoso ✅");
+
+    // Opcional: limpiar campos
+    document.getElementById("registerUser").value = "";
+    document.getElementById("registerPass").value = "";
+
+    // Opcional: cerrar modal de registro
+    registerModal.classList.remove("active");
+
+    // Opcional: abrir login automáticamente
+    loginModal.classList.add("active");
 });
