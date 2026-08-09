@@ -3,144 +3,411 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Gym Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Diseña tus propias rutinas de entrenamiento y registra cada set. Sin plantillas genéricas.">
+    <title>Gym Manager — Tu rutina. Tus reglas.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0B0B0C">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+
+    <meta property="og:title" content="Gym Manager — Tu rutina. Tus reglas.">
+    <meta property="og:description" content="Diseña tus propias rutinas y registra cada set mientras entrenas.">
+    <meta property="og:image" content="assets/og-image.png">
+    <meta property="og:type" content="website">
 </head>
 
 <body>
-    
-<div id="modal" class="modal">
-    <div class="modal-content">
-        <span id="close">&times;</span>
-        <h2 id="modal-title"></h2>
-        <p id="progress-text"></p>
-        
-        <div class="progress-bar">
-            <div id="progress-fill"></div>
-        </div>
 
-        <div class="modal-columns">
-            <div class="column">
-                <h3>Ejercicios</h3>
-                <ul id="modal-exercises"></ul>
+    <!-- ===== MODAL RUTINA ===== -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="progress-text">
+        <div class="modal-content">
+            <span id="close" role="button" aria-label="Cerrar">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="progress-text"></p>
+
+            <div class="progress-bar">
+                <div id="progress-fill"></div>
             </div>
 
-            <div class="column">
-                <h3>Variantes</h3>
-                <ul id="modal-extras"></ul>
+            <ul id="modal-exercises" class="modal-exercises"></ul>
+
+            <div id="modal-extras" class="modal-extras"></div>
+
+            <!-- Temporizador de descanso -->
+            <div class="rest-timer">
+                <p class="rest-label">Descanso</p>
+                <p id="timer-display">00:00</p>
+                <div class="rest-buttons">
+                    <button class="timer-btn" data-seg="60">60s</button>
+                    <button class="timer-btn" data-seg="90">90s</button>
+                    <button class="timer-btn" data-seg="120">120s</button>
+                    <button id="timerReset" class="timer-btn timer-stop">Detener</button>
+                </div>
             </div>
+
+            <button id="saveSession" class="save-session">Guardar entrenamiento</button>
         </div>
     </div>
-</div>
 
-<div id="registerModal" class="modal">
-    <div class="modal-content register-box">
-        <span id="closeRegister">&times;</span>
+    <!-- ===== MODAL NUEVA RUTINA ===== -->
+    <div id="newRutinaModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="newRutinaTitle">
+        <div class="modal-content">
+            <span id="closeNewRutina" role="button" aria-label="Cerrar">&times;</span>
+            <h2 id="newRutinaTitle">Crear rutina</h2>
 
-        <h2>Crear Cuenta</h2>
+            <label class="sr-only" for="newRutinaName">Nombre de la rutina</label>
+            <input type="text" id="newRutinaName" placeholder="Nombre de la rutina">
+            <label class="sr-only" for="newRutinaEjercicios">Ejercicios</label>
+            <textarea id="newRutinaEjercicios" rows="5" placeholder="Ejercicios (uno por línea)&#10;Ej: Press banca 4x10"></textarea>
 
-        <p class="subtitle">Únete y empieza a entrenar 💪</p>
-
-        <input type="text" id="registerUser" placeholder="Usuario">
-        <input type="password" id="registerPass" placeholder="Contraseña">
-
-        <button id="registerSubmit">Registrarme</button>
-
-        <p class="switch-auth">
-            ¿Ya tienes cuenta?
-            <a href="#" id="openLogin">Inicia sesión</a>
-        </p>
+            <button id="newRutinaSubmit">Crear rutina</button>
+        </div>
     </div>
-</div>
 
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span id="closeLogin">&times;</span>
+    <!-- ===== MODAL REGISTRO ===== -->
+    <div id="registerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+        <div class="modal-content register-box">
+            <span id="closeRegister" role="button" aria-label="Cerrar">&times;</span>
 
-        <h2>Iniciar Sesión</h2>
+            <h2 id="registerTitle">Crear cuenta</h2>
+            <p class="subtitle">Únete y empieza a entrenar</p>
 
-        <input type="text" id="loginUser" placeholder="Usuario">
-        <br><br>
-        <input type="password" id="loginPass" placeholder="Contraseña">
-        <br><br>
+            <label class="sr-only" for="registerUser">Usuario</label>
+            <input type="text" id="registerUser" placeholder="Usuario" autocomplete="username">
+            <label class="sr-only" for="registerPass">Contraseña</label>
+            <input type="password" id="registerPass" placeholder="Contraseña (mín. 4 caracteres)" autocomplete="new-password">
+            <label class="sr-only" for="registerPass2">Repite la contraseña</label>
+            <input type="password" id="registerPass2" placeholder="Repite la contraseña" autocomplete="new-password">
 
-        <button id="loginSubmit">Ingresar</button>
+            <button id="registerSubmit">Registrarme</button>
 
-        <p class="switch-auth">
-            ¿No tienes cuenta?
-            <a href="#" id="openRegister">Regístrate</a>
-        </p>
+            <p class="switch-auth">
+                ¿Ya tienes cuenta?
+                <a href="#" id="openLogin">Inicia sesión</a>
+            </p>
+        </div>
     </div>
-</div>
 
-    <header class="navbar">
-        <h1>Gym Manager</h1>
-        <nav>
-            <a href="#">Inicio</a>
-            <a href="#rutinas">Rutinas</a>
+    <!-- ===== MODAL LOGIN ===== -->
+    <div id="loginModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+        <div class="modal-content">
+            <span id="closeLogin" role="button" aria-label="Cerrar">&times;</span>
 
-            <a href="#" id="userDisplay" class="user-badge"></a>
+            <h2 id="loginTitle">Iniciar sesión</h2>
 
-            <a href="#" id="loginBtn">Acceder</a>
-            <a href="#" id="logoutBtn" style="display:none;">Cerrar sesión</a>
-        </nav>
-    </header>
+            <label class="sr-only" for="loginUser">Usuario</label>
+            <input type="text" id="loginUser" placeholder="Usuario" autocomplete="username">
+            <label class="sr-only" for="loginPass">Contraseña</label>
+            <input type="password" id="loginPass" placeholder="Contraseña" autocomplete="current-password">
 
-<section class="banner">
-    <div class="banner-content">
-        <h2>Entrena mejor, alcanza tus metas</h2>
-        <p>Organiza tus rutinas y lleva el control de tu progreso</p>
-        <a href="#rutinas" class="btn">Explorar rutinas</a>
+            <button id="loginSubmit">Ingresar</button>
+
+            <p class="switch-auth">
+                ¿No tienes cuenta?
+                <a href="#" id="openRegister">Regístrate</a>
+            </p>
+        </div>
     </div>
-</section>
 
-    <main>
+    <!-- ===== MODAL HORARIO ===== -->
+    <div id="horarioModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="horarioTitle">
+        <div class="modal-content horario-box">
+            <span id="closeHorario" role="button" aria-label="Cerrar">&times;</span>
+            <h2 id="horarioTitle">Horario semanal</h2>
+            <p class="subtitle">Elige qué entrenar cada día</p>
+
+            <div id="horarioList"></div>
+
+            <button id="horarioSubmit">Guardar horario</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL PERFIL ===== -->
+    <div id="perfilModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="perfilTitle">
+        <div class="modal-content horario-box">
+            <span id="closePerfil" role="button" aria-label="Cerrar">&times;</span>
+            <h2 id="perfilTitle">Mi perfil</h2>
+            <p class="subtitle">Tu objetivo contextualiza tu progreso</p>
+
+            <label class="perfil-label" for="perfilObjetivo">Objetivo</label>
+            <select id="perfilObjetivo" class="select-dark">
+                <option value="fuerza">Fuerza</option>
+                <option value="volumen">Volumen</option>
+                <option value="perdida">Pérdida de peso</option>
+                <option value="resistencia">Resistencia</option>
+                <option value="mantener">Mantener</option>
+            </select>
+
+            <label class="perfil-label" for="perfilAltura">Altura (cm)</label>
+            <input type="number" id="perfilAltura" placeholder="Ej: 178" step="1" min="0">
+
+            <button id="perfilSubmit">Guardar perfil</button>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="wrap nav-inner">
+            <div class="logo"><span class="dot"></span>GYM MANAGER</div>
+
+            <div id="publicNav" class="nav-right">
+                <div class="nav-links">
+                    <a href="#como-funciona">Cómo funciona</a>
+                    <a href="#features">Características</a>
+                    <a href="#progreso">Progreso</a>
+                </div>
+                <div class="nav-cta">
+                    <a href="#" id="loginBtn" class="link-login">Iniciar sesión</a>
+                    <a href="#" id="registerBtn" class="btn btn-primary">Crear cuenta</a>
+                </div>
+            </div>
+
+            <div id="appNav" class="nav-right" style="display:none;">
+                <div class="nav-links">
+                    <a href="#rutina-dia">Hoy</a>
+                    <a href="#rutinas">Rutinas</a>
+                    <a href="#" id="horarioBtn">Horario</a>
+                    <a href="#" id="perfilBtn">Perfil</a>
+                    <a href="entrenamientos.html">Historial</a>
+                </div>
+                <div class="nav-cta">
+                    <a href="#" id="userDisplay" class="user-badge"></a>
+                    <a href="#" id="logoutBtn" class="link-login">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== VISTA PÚBLICA (LANDING) ===== -->
+    <div id="landingView">
+
+        <!-- HERO -->
         <section class="hero">
-            <h2>Transforma tu cuerpo</h2>
-            <p>Gestiona tus entrenamientos y alcanza tus metas</p>
-        </section>
-
-        <section class="rutinas" id="rutinas">
-            <h2>🔥 Rutinas</h2>
-
-            <div class="cards">
-
-                <div class="card">
-                    <h3>Pecho</h3>
-                    <p>Press banca, aperturas, fondos</p>
-                    <button data-rutina="pecho">Ver más</button>
+            <svg class="plates" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="200" cy="200" r="190" stroke="#2A2A29" stroke-width="1"/>
+                <circle cx="200" cy="200" r="140" stroke="#2A2A29" stroke-width="1"/>
+                <circle cx="200" cy="200" r="90" stroke="#FF5A1F" stroke-width="1.5" opacity="0.4"/>
+            </svg>
+            <div class="wrap hero-grid">
+                <div>
+                    <div class="eyebrow">Entrenamiento sin plantillas</div>
+                    <h1>ENTRENA A TU<br>MANERA.</h1>
+                    <p class="sub">Diseña tus propias rutinas, ejercicio por ejercicio. Gym Manager registra cada sesión y tu progreso queda escrito — no memorizado.</p>
+                    <div class="hero-cta">
+                        <a href="#" id="heroCta" class="btn btn-primary">Empieza gratis</a>
+                        <a href="#como-funciona" class="btn btn-ghost">Ver cómo funciona</a>
+                    </div>
+                    <div class="hero-note">// sin tarjeta de crédito · configura tu primera rutina en 3 minutos</div>
                 </div>
 
-                <div class="card">
-                    <h3>Espalda</h3>
-                    <p>Dominadas, remo, jalones</p>
-                    <button data-rutina="espalda">Ver más</button>
+                <div class="mock-card">
+                    <div class="mock-card-header">
+                        <span class="name">Rutina del día</span>
+                        <span class="badge">EN CURSO</span>
+                    </div>
+                    <div class="log-row">
+                        <span class="ex-name">Press banca</span>
+                        <span>4×8 · 72.5kg <span class="check">✓</span></span>
+                    </div>
+                    <div class="log-row">
+                        <span class="ex-name">Press militar</span>
+                        <span>3×10 · 40kg <span class="check">✓</span></span>
+                    </div>
+                    <div class="log-row pending">
+                        <span class="ex-name">Fondos en paralelas</span>
+                        <span>registrando<span class="cursor"></span></span>
+                    </div>
+                    <div class="log-row" style="color:#4d4c48;">
+                        <span class="ex-name">Elevaciones laterales</span>
+                        <span>3×15</span>
+                    </div>
                 </div>
-
-                <div class="card">
-                    <h3>Pierna</h3>
-                    <p>Sentadillas, prensa, extensiones</p>
-                    <button data-rutina="pierna">Ver más</button>
-                </div>
-
             </div>
         </section>
-        
-    </main>
 
+        <!-- MARQUEE -->
+        <div class="marquee-band">
+            <div class="marquee-track">
+                <span>TU RUTINA · TU RITMO</span><span>SIN PLANTILLAS GENÉRICAS</span><span>CADA SET, REGISTRADO</span>
+                <span>TU RUTINA · TU RITMO</span><span>SIN PLANTILLAS GENÉRICAS</span><span>CADA SET, REGISTRADO</span>
+            </div>
+        </div>
+
+        <!-- CÓMO FUNCIONA -->
+        <section id="como-funciona">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="eyebrow">Proceso</div>
+                    <h2>De la idea a la barra en 3 pasos</h2>
+                    <p>No hay rutinas prearmadas que no te sirven. Tú decides qué entrenas, cuándo y cómo lo mides.</p>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <span class="num">01 / CREA TU CUENTA</span>
+                        <h3>Regístrate gratis</h3>
+                        <p>Tu cuenta en segundos. Sin tarjeta de crédito y con tus datos bajo tu control.</p>
+                    </div>
+                    <div class="step">
+                        <span class="num">02 / ENTRENA</span>
+                        <h3>Ejecuta tu rutina</h3>
+                        <p>El plan semanal te dice qué toca cada día. Marca ejercicios y usa el temporizador de descanso.</p>
+                    </div>
+                    <div class="step">
+                        <span class="num">03 / MIDE</span>
+                        <h3>Revisa tu evolución</h3>
+                        <p>Cada sesión queda en tu historial, con tu peso registrado y tu progreso en gráficas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARACTERÍSTICAS -->
+        <section id="features">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="eyebrow">Características</div>
+                    <h2>Todo lo que necesitas, nada que sobre</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><img src="assets/icons/build.svg" alt="" width="20" height="20"></div>
+                        <h3>Constructor de rutinas</h3>
+                        <p>Crea y edita tus propias rutinas con series y repeticiones a tu medida.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><img src="assets/icons/checklist.svg" alt="" width="20" height="20"></div>
+                        <h3>Rutina del día</h3>
+                        <p>Plan semanal automático que te dice exactamente qué entrenar cada día.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><img src="assets/icons/timer.svg" alt="" width="20" height="20"></div>
+                        <h3>Modo sesión en vivo</h3>
+                        <p>Temporizador de descanso y registro de ejercicios completados sobre la marcha.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><img src="assets/icons/trending-up.svg" alt="" width="20" height="20"></div>
+                        <h3>Progreso real</h3>
+                        <p>Gráfica de peso y seguimiento de tus registros, actualizados después de cada sesión.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><img src="assets/icons/calendar.svg" alt="" width="20" height="20"></div>
+                        <h3>Calendario de entrenos</h3>
+                        <p>Planifica tu semana. Sabes qué rutina te toca antes de llegar al gym.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><img src="assets/icons/export.svg" alt="" width="20" height="20"></div>
+                        <h3>Historial exportable</h3>
+                        <p>Descarga tu registro completo cuando quieras. Tus datos son tuyos, siempre.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGRESO -->
+        <section id="progreso" class="progress-section">
+            <div class="wrap progress-grid">
+                <div class="progress-card">
+                    <div class="mono" style="font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Volumen semanal · Press banca</div>
+                    <div class="chart-row">
+                        <div class="bar" style="height:35%;"><span>S1</span></div>
+                        <div class="bar" style="height:48%;"><span>S2</span></div>
+                        <div class="bar" style="height:44%;"><span>S3</span></div>
+                        <div class="bar" style="height:62%;"><span>S4</span></div>
+                        <div class="bar" style="height:58%;"><span>S5</span></div>
+                        <div class="bar active" style="height:80%;"><span>S6</span></div>
+                    </div>
+                    <div class="progress-stats">
+                        <div><div class="val">+18%</div><div class="lbl">Volumen / mes</div></div>
+                        <div><div class="val">72.5kg</div><div class="lbl">PR actual</div></div>
+                        <div><div class="val">24</div><div class="lbl">Sesiones seguidas</div></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="eyebrow">Progreso</div>
+                    <h2 style="font-size:clamp(32px,4vw,46px);">Lo que no se registra,<br>se olvida.</h2>
+                    <p style="color:var(--muted); margin-top:20px; font-size:16px; line-height:1.65; max-width:420px;">Cada sesión que completas queda guardada automáticamente. Sin hojas de cálculo, sin apuntes que después no encuentras.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA FINAL -->
+        <section class="cta-final">
+            <div class="wrap">
+                <h2>Empieza a entrenar<br>a tu manera.</h2>
+                <p>Gratis para tu primera rutina. Sin compromisos.</p>
+                <a href="#" id="ctaFinalBtn" class="btn btn-primary" style="padding:16px 36px; font-size:14px;">Crear cuenta gratis</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== VISTA PRIVADA (APP) ===== -->
+    <div id="appView" style="display:none;">
+
+        <!-- RUTINA DEL DÍA -->
+        <section class="dia" id="rutina-dia">
+            <div class="wrap">
+                <div class="eyebrow">Rutina del día</div>
+                <h2 id="diaNombre">—</h2>
+                <p id="diaDesc">—</p>
+                <p id="perfilLine" class="perfil-line"></p>
+                <button id="diaEntrenar" class="btn btn-primary">Entrenar</button>
+            </div>
+        </section>
+
+        <!-- RUTINAS -->
+        <section class="rutinas" id="rutinas">
+            <div class="wrap">
+                <div class="rutinas-head">
+                    <h2>Tus rutinas</h2>
+                    <div class="rutinas-actions">
+                        <button id="newRutinaBtn" class="btn btn-ghost">+ Nueva rutina</button>
+                        <button id="exportBtn" class="btn btn-ghost">Exportar</button>
+                        <button id="importBtn" class="btn btn-ghost">Importar</button>
+                        <input type="file" id="importFile" accept=".json" style="display:none;">
+                    </div>
+                </div>
+
+                <div class="cards" id="cardsContainer"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
     <footer>
-        <p>© 2026 Gym Manager - Cristian</p>
+        <div class="wrap">
+            <div class="logo"><span class="dot"></span>GYM MANAGER</div>
+            <p class="copy">© 2026 Gym Manager — Cristian</p>
+        </div>
     </footer>
 
-
-<div id="authOverlay" class="auth-overlay">
-    <div class="auth-box">
-        <h2>🔒 Acceso restringido</h2>
-        <p>Debes iniciar sesión para ver las rutinas</p>
-        <button id="openLoginFromOverlay">Iniciar sesión</button>
+    <!-- ===== MODAL CONFIRMACIÓN ===== -->
+    <div id="confirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="modal-content confirm-box">
+            <h2 id="confirmTitle">¿Confirmar?</h2>
+            <p id="confirmMessage" class="subtitle"></p>
+            <div class="confirm-actions">
+                <button id="confirmOk" class="btn btn-primary">Sí</button>
+                <button id="confirmCancel" class="btn btn-ghost">Cancelar</button>
+            </div>
+        </div>
     </div>
-</div>
+
+    <!-- ===== TOASTS ===== -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="ui.js"></script>
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
