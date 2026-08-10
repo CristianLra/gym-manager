@@ -158,6 +158,12 @@
         <div class="wrap nav-inner">
             <div class="logo"><span class="dot"></span>GYM MANAGER</div>
 
+            <button id="menuToggle" class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <div id="publicNav" class="nav-right">
                 <div class="nav-links">
                     <a href="#como-funciona">Cómo funciona</a>
@@ -455,6 +461,7 @@
     <script>
         (function () {
             var logged = localStorage.getItem("loggedIn") === "true";
+            document.body.classList.toggle("logged", logged);
             var apply = function (id, val) {
                 var el = document.getElementById(id);
                 if (el) el.style.display = val;

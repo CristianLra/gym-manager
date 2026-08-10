@@ -81,6 +81,36 @@ document.getElementById("logoutBtn").addEventListener("click", (e) => {
     location.href = "index.html";
 });
 
+/* ========================= */
+/* MENÚ MÓVIL (hamburguesa) */
+/* ========================= */
+
+const menuToggle = document.getElementById("menuToggle");
+
+function setMenu(open) {
+    document.body.classList.toggle("menu-open", open);
+    if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", String(open));
+        menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    }
+}
+
+if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+        setMenu(!document.body.classList.contains("menu-open"));
+    });
+}
+
+document.querySelectorAll(".nav-links a, .nav-cta a").forEach(a => {
+    a.addEventListener("click", () => setMenu(false));
+});
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".navbar")) {
+        setMenu(false);
+    }
+});
+
 window.addEventListener("load", updateNavbar);
 
 /* ========================= */

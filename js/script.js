@@ -1016,6 +1016,36 @@ window.addEventListener("load", () => {
     mostrarCards();
 });
 
+/* ========================= */
+/* MENÚ MÓVIL (hamburguesa) */
+/* ========================= */
+
+const menuToggle = document.getElementById("menuToggle");
+
+function setMenu(open) {
+    document.body.classList.toggle("menu-open", open);
+    if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", String(open));
+        menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    }
+}
+
+if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+        setMenu(!document.body.classList.contains("menu-open"));
+    });
+}
+
+document.querySelectorAll(".nav-links a, .nav-cta a").forEach(a => {
+    a.addEventListener("click", () => setMenu(false));
+});
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".navbar")) {
+        setMenu(false);
+    }
+});
+
 logoutBtn.addEventListener("click", (e) => {
     e.preventDefault();
     localStorage.removeItem("loggedIn");
@@ -1025,6 +1055,8 @@ logoutBtn.addEventListener("click", (e) => {
 
 function checkAuth() {
     const logged = isLogged();
+
+    document.body.classList.toggle("logged", logged);
 
     landingView.style.display = logged ? "none" : "block";
     appView.style.display = logged ? "block" : "none";
