@@ -1,6 +1,6 @@
 // Sube esta versión cada vez que toques CSS/JS/HTML: install() reemplaza el cache
 // y evita que la PWA siga sirviendo archivos viejos.
-const CACHE = "gym-manager-v11";
+const CACHE = "gym-manager-v12";
 
 const ASSETS = [
     "./",

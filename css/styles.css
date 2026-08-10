@@ -1755,6 +1755,10 @@ footer .copy {
     background: var(--bg);
 }
 
+.block-card .chart-wrap canvas {
+    max-width: 100%;
+}
+
 .historial {
     padding: 80px 32px 90px;
     max-width: 1180px;
