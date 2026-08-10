@@ -358,6 +358,26 @@ window.addEventListener("click", (e) => {
 /* GUARDAR ENTRENAMIENTO */
 /* ========================= */
 
+// Mayor peso por ejercicio en todo el historial, ANTES de guardar la sesión.
+// Es la base del PR automático: al guardar se compara cada set contra este mapa
+// y si alguno lo supera se muestra el toast "nuevo PR".
+function mejoresSetsHistorial(historial) {
+    const porEjercicio = {};
+    historial.forEach(entry => {
+        if (!entry.ejercicios || !Array.isArray(entry.ejercicios)) return;
+        entry.ejercicios.forEach(ej => {
+            if (!ej.sets || !Array.isArray(ej.sets)) return;
+            const pesos = ej.sets.map(s => s.peso).filter(p => typeof p === "number");
+            if (pesos.length === 0) return;
+            const mejor = Math.max(...pesos);
+            if (!porEjercicio[ej.nombre] || mejor > porEjercicio[ej.nombre]) {
+                porEjercicio[ej.nombre] = mejor;
+            }
+        });
+    });
+    return porEjercicio;
+}
+
 saveSessionBtn.addEventListener("click", () => {
     if (!currentRutina) return;
 
@@ -395,7 +415,13 @@ saveSessionBtn.addEventListener("click", () => {
     }
 
     const historial = getJSON(gkey("historial"), []);
+    const mejoresPrevios = mejoresSetsHistorial(historial);
+
     historial.push({
+        // Fecha en UTC. En husos negativos (ej. Colombia, UTC-5) una sesión guardada entre
+        // las 19:00 y la medianoche local queda fechada al día siguiente; la racha semanal
+        // calcula "hoy" con fecha local (fmtFecha), así que esa sesión puede caer en la semana
+        // equivocada. Edge conocido: unificar la fecha a local arregla el desfase.
         fecha: new Date().toISOString().slice(0, 10),
         hora: new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
         rutina: currentRutina,
@@ -406,6 +432,17 @@ saveSessionBtn.addEventListener("click", () => {
     });
     setJSON(gkey("historial"), historial);
 
+    const prs = [];
+    ejerciciosLog.forEach(ej => {
+        const pesos = (ej.sets || []).map(s => s.peso).filter(p => typeof p === "number");
+        if (pesos.length === 0) return;
+        const nuevoMejor = Math.max(...pesos);
+        const previo = mejoresPrevios[ej.nombre];
+        if (previo && nuevoMejor > previo) {
+            prs.push(`Nuevo PR: ${nuevoMejor}kg en ${ej.nombre} (antes ${previo}kg)`);
+        }
+    });
+
     data.ejercicios.forEach((ej, i) => {
         localStorage.removeItem(progressKey(currentRutina, i));
     });
@@ -414,6 +451,7 @@ saveSessionBtn.addEventListener("click", () => {
 
     cerrarModal();
     showToast("Entrenamiento guardado", "ok");
+    prs.forEach(msg => showToast(msg, "pr"));
 
     revisarBackup();
 });
@@ -488,8 +526,64 @@ function rutinaDeHoy() {
     return getSchedule()[day] || null;
 }
 
+function marcarHoyEnStrip() {
+    const strip = document.querySelector(".week-strip");
+    if (!strip) return;
+    // getDay() arranca la semana en domingo (0); el strip va L→D, así que rotamos: dom → índice 6.
+    const idx = (new Date().getDay() + 6) % 7;
+    strip.querySelectorAll(".week-day").forEach((d, i) => d.classList.toggle("today", i === idx));
+    const label = document.getElementById("weekLabel");
+    if (label) label.textContent = `HOY · ${DIAS[new Date().getDay()].toUpperCase()}`;
+}
+
+function fmtFecha(d) {
+    const anio = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, "0");
+    const dia = String(d.getDate()).padStart(2, "0");
+    return `${anio}-${mes}-${dia}`;
+}
+
+// Semana (lunes) a la que pertenece una fecha, en horario LOCAL: la racha se calcula
+// contra "hoy" local, así que aquí no se usa UTC.
+function claveSemana(fechaStr) {
+    const d = new Date(fechaStr + "T00:00:00");
+    const dia = (d.getDay() + 6) % 7;
+    d.setDate(d.getDate() - dia);
+    return fmtFecha(d);
+}
+
+// Semanas consecutivas con entrenamiento, contando la actual si ya entrenaste en ella.
+function rachaSemanas() {
+    const historial = getJSON(gkey("historial"), []);
+    const semanas = new Set(historial.map(e => (e.fecha ? claveSemana(e.fecha) : null)));
+    const hoy = new Date();
+    let cursor = semanas.has(claveSemana(fmtFecha(hoy))) ? 0 : 1;
+    let racha = 0;
+    while (cursor < 1040) {
+        const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - cursor * 7);
+        if (semanas.has(claveSemana(fmtFecha(fecha)))) {
+            racha++;
+        } else {
+            break;
+        }
+        cursor++;
+    }
+    return racha;
+}
+
+function mostrarRacha() {
+    const rachaEl = document.getElementById("rachaText");
+    if (!rachaEl) return;
+    const racha = rachaSemanas();
+    rachaEl.textContent = racha > 0
+        ? `Racha · ${racha} semana${racha === 1 ? "" : "s"}`
+        : "Entrena esta semana";
+}
+
 function mostrarDia() {
     const key = rutinaDeHoy();
+    marcarHoyEnStrip();
+    mostrarRacha();
 
     if (!key) {
         diaNombre.textContent = `${DIAS[new Date().getDay()]} — DESCANSO`;

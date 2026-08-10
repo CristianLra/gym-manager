@@ -8,18 +8,18 @@
     <title>Gym Manager — Historial</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="manifest" href="manifest.webmanifest">
     <meta name="theme-color" content="#0B0B0C">
-    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png">
+    <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
 
     <meta property="og:title" content="Gym Manager — Tu rutina. Tus reglas.">
     <meta property="og:description" content="Diseña tus propias rutinas y registra cada set mientras entrenas.">
-    <meta property="og:image" content="assets/og-image.png">
+    <meta property="og:image" content="assets/images/og-image.png">
     <meta property="og:type" content="website">
 </head>
 
@@ -49,33 +49,46 @@
     <main>
         <p id="perfilInfo" class="perfil-line perfil-page"></p>
 
-        <!-- ===== SEGUIMIENTO DE PESO ===== -->
-        <section class="peso">
-            <h2>SEGUIMIENTO DE PESO</h2>
+        <!-- ===== GRÁFICAS ===== -->
+        <section class="progreso-grid">
 
-            <div class="peso-form">
-                <label class="sr-only" for="pesoInput">Peso (kg)</label>
-                <input type="number" id="pesoInput" placeholder="Peso (kg)" step="0.1" min="0" autocomplete="off">
-                <button id="pesoSubmit" class="btn btn-primary">GUARDAR</button>
+            <!-- SEGUIMIENTO DE PESO -->
+            <div class="block-card">
+                <h2>SEGUIMIENTO DE PESO</h2>
+
+                <div class="peso-form">
+                    <label class="sr-only" for="pesoInput">Peso (kg)</label>
+                    <input type="number" id="pesoInput" placeholder="Peso (kg)" step="0.1" min="0" autocomplete="off">
+                    <button id="pesoSubmit" class="btn btn-primary">GUARDAR</button>
+                </div>
+
+                <div class="chart-wrap">
+                    <canvas id="pesoChart" height="120"></canvas>
+                </div>
+
+                <div class="peso-drop">
+                    <button id="pesoListToggle" class="peso-toggle" type="button" aria-expanded="false">
+                        <span>Historial de peso (<span class="count">0</span>)</span>
+                        <span class="chevron" aria-hidden="true">▾</span>
+                    </button>
+                    <div id="pesoList" class="peso-list"></div>
+                </div>
             </div>
 
-            <div class="chart-wrap">
-                <canvas id="pesoChart" height="120"></canvas>
-            </div>
-        </section>
+            <!-- PROGRESO POR EJERCICIO -->
+            <div class="block-card">
+                <h2>PROGRESO POR EJERCICIO</h2>
 
-        <!-- ===== PROGRESO POR EJERCICIO ===== -->
-        <section class="peso">
-            <h2>PROGRESO POR EJERCICIO</h2>
+                <div class="peso-form">
+                    <label class="sr-only" for="ejercicioSelect">Ejercicio</label>
+                    <select id="ejercicioSelect" class="select-dark">
+                        <option value="">Selecciona un ejercicio</option>
+                    </select>
+                </div>
 
-            <div class="peso-form">
-                <select id="ejercicioSelect" class="select-dark">
-                    <option value="">Selecciona un ejercicio</option>
-                </select>
-            </div>
-
-            <div class="chart-wrap">
-                <canvas id="progresoChart" height="120"></canvas>
+                <div class="chart-wrap">
+                    <canvas id="progresoChart" height="120"></canvas>
+                </div>
             </div>
         </section>
 

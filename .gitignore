@@ -1,0 +1,20 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node (por si se añade npm en el futuro)
+node_modules/
+
+# Artefactos generados en runtime por la skill impeccable
+.impeccable/
+
+# Herramientas de agentes (personales; se reinstalan con npx impeccable install)
+.opencode/
+.claude/
+.agents/
+.codex/
+skills-lock.json
+
+# Logs y temporales
+*.log

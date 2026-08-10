@@ -1,4 +1,6 @@
-const CACHE = "gym-manager-v1";
+// Sube esta versión cada vez que toques CSS/JS/HTML: install() reemplaza el cache
+// y evita que la PWA siga sirviendo archivos viejos.
+const CACHE = "gym-manager-v10";
 
 const ASSETS = [
     "./",
@@ -10,12 +12,15 @@ const ASSETS = [
     "./js/script-entrenamientos.js",
     "./js/ui.js",
     "./manifest.webmanifest",
-    "./assets/favicon.svg",
-    "./assets/favicon-32.png",
-    "./assets/apple-touch-icon.png",
-    "./assets/icon-192.png",
-    "./assets/icon-512.png",
-    "./assets/og-image.png",
+    "./assets/brand/favicon.svg",
+    "./assets/brand/favicon-32.png",
+    "./assets/brand/apple-touch-icon.png",
+    "./assets/brand/icon-192.png",
+    "./assets/brand/icon-512.png",
+    "./assets/images/og-image.png",
+    "./assets/images/hero-poster.jpg",
+    "./assets/videos/hero-bg.mp4",
+    "./assets/videos/banner-progreso.mp4",
     "./assets/icons/build.svg",
     "./assets/icons/calendar.svg",
     "./assets/icons/checklist.svg",
