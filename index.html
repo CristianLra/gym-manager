@@ -197,14 +197,14 @@
 
         <!-- HERO -->
         <!-- VIDEO DE FONDO: 16:9 (1920x1080 mínimo, 1280x720 ok). Loop de 5-10s,
-             muteado, sin controles. Sin poster: el fade-in CSS evita el parpadeo
-             de la imagen mientras el video carga (por eso también va opacity:0
-             hasta que entra). Si el usuario prefiere menos movimiento, el CSS
-             muestra el poster fijo como fondo. Recomendado: MP4 H.264 o WebM,
+             muteado, sin controles. preload="auto" arranca la descarga de inmediato.
+             Mientras carga, el CSS muestra el poster fijo como fondo (sin parpadeo:
+             el video entra con fade-in encima). Si el usuario prefiere menos
+             movimiento, el CSS usa el poster fijo. Recomendado: MP4 H.264 o WebM,
              ideal <3-4MB. -->
         <section class="hero">
             <video id="hero-video" class="hero-video" autoplay muted loop playsinline
-                   aria-hidden="true">
+                   preload="auto" aria-hidden="true">
                 <source src="assets/videos/hero-bg.mp4" type="video/mp4">
             </video>
             <div class="hero-overlay" aria-hidden="true"></div>

@@ -276,6 +276,7 @@ a {
     position: relative;
     padding: 100px 0 70px;
     overflow: hidden;
+    background: var(--bg) url('../images/hero-poster.jpg') center/cover;
 }
 
 .hero-grid {
