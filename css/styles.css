@@ -291,7 +291,7 @@ a {
     object-fit: cover;
     object-position: center;
     z-index: 0;
-    filter: blur(2px) brightness(0.85);
+    filter: blur(2px) brightness(1.05);
     transform: scale(1.02);
     pointer-events: none;
     opacity: 0;
@@ -301,7 +301,7 @@ a {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0, 0, 0, 0.28);
     z-index: 0;
     pointer-events: none;
 }
