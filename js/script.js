@@ -1,5 +1,3 @@
-console.log("Gym Manager iniciado");
-
 /* ========================= */
 /* ELEMENTOS DEL DOM */
 /* ========================= */
@@ -73,46 +71,9 @@ const perfilAltura = document.getElementById("perfilAltura");
 const perfilSubmit = document.getElementById("perfilSubmit");
 const perfilLine = document.getElementById("perfilLine");
 
-const OBJETIVOS = {
-    fuerza: "Fuerza",
-    volumen: "Volumen",
-    perdida: "Pérdida de peso",
-    resistencia: "Resistencia",
-    mantener: "Mantener"
-};
-
 let currentRutina = "";
 let timerInterval = null;
 let rutinaEditando = null;
-
-/* ========================= */
-/* HELPERS */
-/* ========================= */
-
-function isLogged() {
-    return localStorage.getItem("loggedIn") === "true";
-}
-
-function currentUser() {
-    return localStorage.getItem("currentUser") || "";
-}
-
-function getJSON(key, fallback) {
-    try {
-        const val = localStorage.getItem(key);
-        return val ? JSON.parse(val) : fallback;
-    } catch (e) {
-        return fallback;
-    }
-}
-
-function setJSON(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-}
-
-function gkey(suffix) {
-    return `gm:${currentUser()}:${suffix}`;
-}
 
 function progressKey(rutina, index) {
     return gkey(`progreso:${rutina}:${index}`);
@@ -148,24 +109,51 @@ function renderCards() {
 
     let index = 1;
 
+    const custom = getCustomRutinas();
+
     for (const key in rutinas) {
         const r = rutinas[key];
         const card = document.createElement("div");
         card.className = "card";
 
-        const custom = getCustomRutinas();
         const isCustom = !!custom[key];
 
-        card.innerHTML = `
-            <p class="card-index">${String(index).padStart(2, "0")}</p>
-            ${isCustom ? `<button class="card-delete" data-delete="${key}" title="Eliminar">&times;</button>` : ""}
-            <h3>${r.nombre}</h3>
-            <p>${r.desc}</p>
-            <div class="card-actions">
-                <button data-rutina="${key}">VER MÁS</button>
-                <button data-editar="${key}">${isCustom ? "EDITAR" : "CLONAR"}</button>
-            </div>
-        `;
+        const indexP = document.createElement("p");
+        indexP.className = "card-index";
+        indexP.textContent = String(index).padStart(2, "0");
+        card.appendChild(indexP);
+
+        if (isCustom) {
+            const delBtn = document.createElement("button");
+            delBtn.className = "card-delete";
+            delBtn.dataset.delete = key;
+            delBtn.title = "Eliminar";
+            delBtn.textContent = "\u00d7";
+            card.appendChild(delBtn);
+        }
+
+        const h3 = document.createElement("h3");
+        h3.textContent = r.nombre;
+        card.appendChild(h3);
+
+        const descP = document.createElement("p");
+        descP.textContent = r.desc;
+        card.appendChild(descP);
+
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+
+        const verBtn = document.createElement("button");
+        verBtn.dataset.rutina = key;
+        verBtn.textContent = "VER MÁS";
+        actions.appendChild(verBtn);
+
+        const editBtn = document.createElement("button");
+        editBtn.dataset.editar = key;
+        editBtn.textContent = isCustom ? "EDITAR" : "CLONAR";
+        actions.appendChild(editBtn);
+
+        card.appendChild(actions);
 
         cardsContainer.appendChild(card);
         index++;
@@ -1022,14 +1010,6 @@ window.addEventListener("load", () => {
 
 const menuToggle = document.getElementById("menuToggle");
 
-function setMenu(open) {
-    document.body.classList.toggle("menu-open", open);
-    if (menuToggle) {
-        menuToggle.setAttribute("aria-expanded", String(open));
-        menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
-    }
-}
-
 if (menuToggle) {
     menuToggle.addEventListener("click", () => {
         setMenu(!document.body.classList.contains("menu-open"));
@@ -1074,11 +1054,11 @@ function checkAuth() {
 }
 
 function getUsers() {
-    return JSON.parse(localStorage.getItem("users")) || [];
+    return getJSON("users", []);
 }
 
 function saveUsers(users) {
-    localStorage.setItem("users", JSON.stringify(users));
+    setJSON("users", users);
 }
 
 openRegister.addEventListener("click", (e) => {

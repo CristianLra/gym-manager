@@ -1,0 +1,7 @@
+{
+  "name": "gym-manager",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/functions.test.mjs"
+  }
+}

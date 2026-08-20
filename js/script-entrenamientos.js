@@ -1,34 +1,3 @@
-console.log("Historial Gym Manager iniciado");
-
-/* ========================= */
-/* HELPERS */
-/* ========================= */
-
-function isLogged() {
-    return localStorage.getItem("loggedIn") === "true";
-}
-
-function currentUser() {
-    return localStorage.getItem("currentUser") || "";
-}
-
-function getJSON(key, fallback) {
-    try {
-        const val = localStorage.getItem(key);
-        return val ? JSON.parse(val) : fallback;
-    } catch (e) {
-        return fallback;
-    }
-}
-
-function setJSON(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-}
-
-function gkey(suffix) {
-    return `gm:${currentUser()}:${suffix}`;
-}
-
 function dibujarPlaceholder(ctx, canvas, mensaje) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#918F89";
@@ -87,14 +56,6 @@ document.getElementById("logoutBtn").addEventListener("click", (e) => {
 
 const menuToggle = document.getElementById("menuToggle");
 
-function setMenu(open) {
-    document.body.classList.toggle("menu-open", open);
-    if (menuToggle) {
-        menuToggle.setAttribute("aria-expanded", String(open));
-        menuToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
-    }
-}
-
 if (menuToggle) {
     menuToggle.addEventListener("click", () => {
         setMenu(!document.body.classList.contains("menu-open"));
@@ -120,6 +81,8 @@ window.addEventListener("load", updateNavbar);
 const pesoInput = document.getElementById("pesoInput");
 const pesoSubmit = document.getElementById("pesoSubmit");
 const ejercicioSelect = document.getElementById("ejercicioSelect");
+const pesoListToggle = document.getElementById("pesoListToggle");
+const pesoList = document.getElementById("pesoList");
 
 let pesoChart = null;
 let progresoChart = null;
@@ -230,7 +193,14 @@ function renderPesoList() {
         item.className = "peso-item";
 
         const info = document.createElement("span");
-        info.innerHTML = `<span class="peso-fecha">${registro.fecha}</span> — <b>${registro.peso}kg</b>`;
+        const fechaSpan = document.createElement("span");
+        fechaSpan.className = "peso-fecha";
+        fechaSpan.textContent = registro.fecha;
+        info.appendChild(fechaSpan);
+        info.appendChild(document.createTextNode(" \u2014 "));
+        const pesoStrong = document.createElement("b");
+        pesoStrong.textContent = `${registro.peso}kg`;
+        info.appendChild(pesoStrong);
 
         const borrar = document.createElement("button");
         borrar.className = "peso-borrar";
@@ -366,14 +336,6 @@ ejercicioSelect.addEventListener("change", () => {
     renderProgresoEjercicio(cacheProgreso, ejercicioSelect.value);
 });
 
-const OBJETIVOS = {
-    fuerza: "Fuerza",
-    volumen: "Volumen",
-    perdida: "Pérdida de peso",
-    resistencia: "Resistencia",
-    mantener: "Mantener"
-};
-
 function mostrarPerfilInfo() {
     const el = document.getElementById("perfilInfo");
     if (!el) return;
@@ -422,10 +384,15 @@ function renderHistorial() {
         head.className = "historial-head";
 
         const info = document.createElement("div");
-        info.innerHTML = `
-            <p class="historial-nombre">${entry.nombre}</p>
-            <p class="historial-fecha">${entry.fecha} — ${entry.hora}</p>
-        `;
+        const nombreP = document.createElement("p");
+        nombreP.className = "historial-nombre";
+        nombreP.textContent = entry.nombre;
+        info.appendChild(nombreP);
+
+        const fechaP = document.createElement("p");
+        fechaP.className = "historial-fecha";
+        fechaP.textContent = `${entry.fecha} \u2014 ${entry.hora}`;
+        info.appendChild(fechaP);
 
         const resultado = document.createElement("p");
         resultado.className = "historial-resultado";
@@ -446,10 +413,13 @@ function renderHistorial() {
                     const peso = s.peso !== "" && s.peso != null
                         ? `${s.peso}kg`
                         : "PC";
-                    return `<b>${peso}</b> × ${s.reps}`;
-                }).join(" · ");
+                    return `${peso} \u00d7 ${s.reps}`;
+                }).join(" \u00b7 ");
 
-                row.innerHTML = `<b>${ej.nombre}:</b> ${sets}`;
+                const nombreStrong = document.createElement("b");
+                nombreStrong.textContent = `${ej.nombre}:`;
+                row.appendChild(nombreStrong);
+                row.appendChild(document.createTextNode(` ${sets}`));
                 detalle.appendChild(row);
             });
         } else {
